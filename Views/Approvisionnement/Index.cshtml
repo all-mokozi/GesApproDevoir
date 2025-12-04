@@ -1,0 +1,54 @@
+@model GesAppro.Models.PaginatedList<GesAppro.Models.Approvisionnement>
+
+@{
+    ViewData["Title"] = "Approvisionnements";
+}
+
+<div class="container mt-3">
+    <h2>Liste des approvisionnements</h2>
+    <a class="btn btn-primary mb-2" href="/Approvisionnement/Create">+ Nouvel approvisionnement</a>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Date</th>
+                    <th>Fournisseur</th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var a in Model.Items)
+                {
+                    var statusClass = a.Statut == "Reçu" ? "badge bg-success" : (a.Statut == "En attente" ? "badge bg-warning text-dark" : "badge bg-danger");
+                    <tr>
+                        <td>@a.Reference</td>
+                        <td>@a.Date.ToString("dd/MM/yyyy")</td>
+                        <td>@a.Fournisseur</td>
+                        <td>@String.Format("{0:N0} FCFA", a.MontantTotal)</td>
+                        <td><span class="@statusClass">@a.Statut</span></td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" href="#" title="Voir"><i class="fa-solid fa-eye"></i></a>
+                            <a class="btn btn-sm btn-warning text-dark" href="#" title="Éditer"><i class="fa-solid fa-pen"></i></a>
+                            <a class="btn btn-sm btn-danger" href="#" title="Supprimer"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation" class="d-flex justify-content-center">
+        <ul class="pagination">
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" href="?start=@ViewData["start"]&amp;end=@ViewData["end"]&amp;page=@(Model.PageIndex-1)">Précédent</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i==Model.PageIndex?"active":"")"><a class="page-link" href="?start=@ViewData["start"]&amp;end=@ViewData["end"]&amp;page=@i">@i</a></li>
+            }
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link" href="?start=@ViewData["start"]&amp;end=@ViewData["end"]&amp;page=@(Model.PageIndex+1)">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+</div>

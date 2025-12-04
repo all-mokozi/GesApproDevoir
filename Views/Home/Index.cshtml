@@ -1,0 +1,100 @@
+﻿@model GesAppro.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Gestion des Approvisionnements";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Gestion des Approvisionnements</h2>
+        <a class="btn btn-primary" href="/Approvisionnement/Create">+ Nouvel approvisionnement</a>
+    </div>
+
+    <div class="card p-3 mb-4">
+        <div class="row">
+            <div class="col-md-8">
+                <form asp-controller="Home" asp-action="Index" class="row g-2" method="get" id="filterForm">
+                    <div class="col-md-4">
+                        <label class="form-label">Date début</label>
+                        <input id="startDate" name="start" type="date" class="form-control" value="@(ViewData["start"] ?? String.Empty)" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Date fin</label>
+                        <input id="endDate" name="end" type="date" class="form-control" value="@(ViewData["end"] ?? String.Empty)" />
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end justify-content-end">
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-primary">Filtrer</button>
+                            <button type="button" id="resetFilter" class="btn btn-outline-secondary">Réinitialiser</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Référence</th>
+                        <th>Date</th>
+                        <th>Fournisseur</th>
+                        <th>Articles</th>
+                        <th>Montant total</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var a in Model.RecentApprovisionnements.Items)
+                    {
+                        var statusClass = a.Statut == "Reçu" ? "badge bg-success" : (a.Statut == "En attente" ? "badge bg-warning text-dark" : "badge bg-danger");
+                        <tr>
+                            <td>@a.Reference</td>
+                            <td>@a.Date.ToString("dd/MM/yyyy")</td>
+                            <td>@a.Fournisseur</td>
+                            <td><span class="badge bg-info">@a.Produits.Count() articles</span></td>
+                            <td>@String.Format("{0:N0} FCFA", a.MontantTotal)</td>
+                            <td><span class="@statusClass">@a.Statut</span></td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href="#" title="Voir"><i class="fa-solid fa-eye"></i></a>
+                                <a class="btn btn-sm btn-warning text-dark" href="#" title="Éditer"><i class="fa-solid fa-pen"></i></a>
+                                <a class="btn btn-sm btn-danger" href="#" title="Suppr"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation" class="d-flex justify-content-center">
+        <ul class="pagination">
+            <li class="page-item @(Model.RecentApprovisionnements.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" href="?start=@(ViewData["start"])&amp;end=@(ViewData["end"])&amp;page=@(Model.RecentApprovisionnements.PageIndex-1)">Précédent</a>
+            </li>
+            @for (int i = 1; i <= Model.RecentApprovisionnements.TotalPages; i++)
+            {
+                <li class="page-item @(i==Model.RecentApprovisionnements.PageIndex?"active":"")"><a class="page-link" href="?start=@(ViewData["start"])&amp;end=@(ViewData["end"])&amp;page=@i">@i</a></li>
+            }
+            <li class="page-item @(Model.RecentApprovisionnements.HasNextPage ? "" : "disabled")">
+                <a class="page-link" href="?start=@(ViewData["start"])&amp;end=@(ViewData["end"])&amp;page=@(Model.RecentApprovisionnements.PageIndex+1)">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+
+    
+</div>
+<script>
+    (function(){
+        const resetBtn = document.getElementById('resetFilter');
+        if(resetBtn){
+            resetBtn.addEventListener('click', function(){
+                // Redirect to the dashboard (Home Index) with no filters
+                window.location.href = '/';
+            });
+        }
+    })();
+</script>

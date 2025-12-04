@@ -21,7 +21,7 @@ public class ApprovisionnementController : Controller
         }
         if (end.HasValue)
         {
-            // include entire end day
+           
             var endOfDay = end.Value.Date.AddDays(1).AddTicks(-1);
             query = query.Where(a => a.Date <= endOfDay);
         }
@@ -37,25 +37,49 @@ public class ApprovisionnementController : Controller
     public IActionResult Create()
     {
         var model = new Approvisionnement { Date = DateTime.Today };
-        // Prefill generated reference so user sees it (read-only in the form)
+       
         model.Reference = _service.GenerateReference();
+        if (model.Produits == null || model.Produits.Count == 0)
+        {
+            model.Produits = new List<Produit> { new Produit() };
+        }
         return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(Approvisionnement model)
+    public IActionResult Create(Approvisionnement model, string? addProduct)
     {
+        // If user clicked 'Ajouter un autre article', add an empty product and redisplay the form
+        if (!string.IsNullOrEmpty(addProduct))
+        {
+            if (model.Produits == null) model.Produits = new List<Produit>();
+            model.Produits.Add(new Produit());
+            return View(model);
+        }
+
+        // If user clicked a remove button, the index will be in the Request.Form["remove"]
+        var removeVal = Request.Form["remove"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(removeVal) && int.TryParse(removeVal, out var removeIdx))
+        {
+            if (model.Produits != null && removeIdx >= 0 && removeIdx < model.Produits.Count)
+            {
+                model.Produits.RemoveAt(removeIdx);
+            }
+            return View(model);
+        }
+
+        // Otherwise attempt to save
         if (!ModelState.IsValid) return View(model);
         if (model.Produits == null) model.Produits = new List<Produit>();
-        // generate reference server-side
+
         if (string.IsNullOrWhiteSpace(model.Reference))
         {
             model.Reference = _service.GenerateReference();
         }
         if (model.Date == default) model.Date = DateTime.Today;
         _service.Add(model);
-        // After creating, redirect to the Home dashboard
+
         return RedirectToAction("Index", "Home");
     }
 }

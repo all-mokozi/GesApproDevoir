@@ -28,3 +28,4 @@ C:\Users\mohma\Desktop\csharp\GesAppro\obj\Debug\net8.0\refint\GesAppro.dll
 C:\Users\mohma\Desktop\csharp\GesAppro\obj\Debug\net8.0\GesAppro.pdb
 C:\Users\mohma\Desktop\csharp\GesAppro\obj\Debug\net8.0\GesAppro.genruntimeconfig.cache
 C:\Users\mohma\Desktop\csharp\GesAppro\obj\Debug\net8.0\ref\GesAppro.dll
+C:\Users\mohma\Desktop\csharp\GesAppro\obj\Debug\net8.0\GesAppro.sourcelink.json

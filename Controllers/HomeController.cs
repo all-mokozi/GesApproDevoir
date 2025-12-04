@@ -49,7 +49,6 @@ public class HomeController : Controller
         return View(vm);
     }
 
-    // Privacy action removed per request.
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

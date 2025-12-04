@@ -9,7 +9,6 @@ public class ApprovisionnementService : GesAppro.Services.IApprovisionnementServ
 
     public ApprovisionnementService()
     {
-        // Seed some sample data matching the screenshots
         var p1 = new Approvisionnement
         {
             Id = _nextId++,
@@ -52,7 +51,6 @@ public class ApprovisionnementService : GesAppro.Services.IApprovisionnementServ
         };
 
         _data.AddRange(new[] { p1, p2, p3 });
-        // Add more sample data to provide pagination
         for (int i = 4; i <= 15; i++)
         {
             var a = new Approvisionnement
@@ -83,7 +81,6 @@ public class ApprovisionnementService : GesAppro.Services.IApprovisionnementServ
 
     public string GenerateReference()
     {
-        // Do not increment _nextId here — Add will reserve the id when saving.
         return $"APP-2023-{_nextId:000}";
     }
 
